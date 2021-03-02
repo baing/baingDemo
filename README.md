@@ -11,7 +11,7 @@ demo示意
 ## 后端运行
 node app.js
 
-## 前段运行
+## 前端运行
 npm run serve
 
 创建2个浏览器窗口即可对战。
