@@ -1,3 +1,5 @@
+//目前无用。
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 

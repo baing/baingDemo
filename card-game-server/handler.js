@@ -43,6 +43,7 @@ function connect(args, socket, socketServer) {
         sendCards(roomNumber, identity); // 把牌发送给玩家
 
     } else {
+        //发送给前段wait消息，waite为误写。该消息使得玩家总是处于等待中。
         socket.emit("WAITE"); // 不管三七二十一，先给老子等起
 
         if (waitPairQueue.length === 0) {
@@ -52,6 +53,7 @@ function connect(args, socket, socketServer) {
     
             socket.emit("WAITE");
         } else {
+            //只要有在排队的人，便开始游戏。
             let waitPlayer = waitPairQueue.splice(0, 1)[0]; // 随便拉个小伙干一架
             let roomNumber = uuidv4(); // 生成房间号码
     
@@ -60,21 +62,22 @@ function connect(args, socket, socketServer) {
             // 初始化游戏数据
             waitPlayer.roomNumber = roomNumber; 
             memoryData[roomNumber] = {
-                "one": waitPlayer,
-                "two": {
+                "one": waitPlayer,            //玩家1
+                "two": {                        //玩家2
                     userId, socket, roomNumber
                 },
-                seed, // 随机数种子
-                rand: seedrandom(seed), // 随机方法
+                seed, // 随机数
+                rand: seedrandom(seed), // 随机种子
             };
             existUserGameRoomMap[userId] = roomNumber;
             existUserGameRoomMap[waitPlayer.userId] = roomNumber;
     
             // 进入房间
-            socket.join(roomNumber);
-            waitPlayer.socket.join(roomNumber);
+            socket.join(roomNumber);     //玩家加入房间。
+            waitPlayer.socket.join(roomNumber);   //另一半，即正在等待的玩家加入房间。
     
             // 游戏初始化完成，发送游戏初始化数据
+            //双方玩家开始游戏，开始向前段发送开始start事件。
             waitPlayer.socket.emit("START", {
                 roomNumber,
                 memberId: "one"
@@ -83,7 +86,7 @@ function connect(args, socket, socketServer) {
                 roomNumber,
                 memberId: "two"
             });
-    
+            
             initCard(roomNumber);
         }
     }
@@ -127,7 +130,7 @@ function initCard(roomNumber) {
 }
 
 
-
+//对attackCard事件进行转发。
 function attackCard(args, socket) {
     let roomNumber = args.r, myK = args.myK, attackK = args.attackK, card, attackCard;
 
@@ -225,7 +228,7 @@ function outCard(args, socket) {
             // error 场上怪物满了
             return;
         }
-
+    //正常的出牌逻辑
         memoryData[roomNumber][belong]["fee"] -= card.cost;
 
         memoryData[roomNumber][belong]["tableCards"].push(card);
@@ -239,7 +242,7 @@ function outCard(args, socket) {
             card,
             isMine: false
         });
-
+    //处理战吼，也就是出牌时执行的事件。    
         let mySpecialMethod = getSpecialMethod(belong, roomNumber);
         if (card && card.onStart) {
             card.onStart({
@@ -309,7 +312,7 @@ function checkCardDieEvent(roomNumber, level, myKList, otherKList) {
         getSpecialMethod("one", roomNumber).dieCardAnimation(true, myKList, otherKList);
     }
 }
-
+//像前段发送某个卡片的死亡动画事件
 function getSpecialMethod(identity, roomNumber) {
     let otherIdentity = identity === "one" ? "two": "one";
 
@@ -339,7 +342,9 @@ function getNextCard(remainingCards) {
     }
 }
 
+//向前段发送send_card事件
 function sendCards(roomNumber, identity) {
+    //只发送给确定的某一个玩家
     if (identity) {
         let otherIdentity = identity === "one" ? "two" : "one";
 
@@ -349,6 +354,7 @@ function sendCards(roomNumber, identity) {
             otherTableCard: memoryData[roomNumber][otherIdentity]["tableCards"],
         })
     } else {
+    //发送给两人玩家
         sendCards(roomNumber, "one");
         sendCards(roomNumber, "two");
     }

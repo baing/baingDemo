@@ -1,25 +1,3 @@
-// {
-//     id: 0,
-//     name: "xxxxxx",
-//     cardType: CardType.CHARACTER,
-//     cost: 3,
-//     content: `xxxxxxxxxx`,
-//     attack: 2,
-//     life: 1,
-//     attackBase: 2,
-//     lifeBase: 1,
-//     type: [""],
-//     isStrong: true,
-//     isFullOfEnergy: true,
-//     isDedication: true,
-//     onStart: function() {},
-//     onOtherCardStart: function() {},
-//     onMyTurnStart: function() {},
-//     onMyTurnEnd: function() {},
-//     onChooseTarget: function() {},
-//     onEnd: function() {},
-//     onTableCardChange: function() {},
-// }
 
 const CardType = {
     EFFECT: 1, // 效果牌

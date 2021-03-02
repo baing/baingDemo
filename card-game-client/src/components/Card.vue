@@ -1,5 +1,7 @@
 <template>
+    <!-- mouseDown指鼠标点下的时间，其中有计算当前的位置坐标 data-k指卡片的唯一id-->
     <div ref="cardDom" class="card" @mousedown="mouseDown($event)" :data-k="data.k">
+        <!-- 卡片里的各种参数 -->
         <div :class="isDedicationClassName"></div>
         <div :class="isStrongClassName"></div>
 

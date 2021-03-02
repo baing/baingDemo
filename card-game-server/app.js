@@ -16,13 +16,13 @@ let server = http.createServer(app);
 let socketServer = socket(server);
 
 server.listen(4001, function () {
-    console.log("listen");
+    console.log("listen1");
 });
 socketServer.on('connection', function (socket) {
     console.log("connect one on ：" + new Date().toLocaleString());
-    
+    //接受command参数，{type: "CONNECT",userId: this.userId}
     socket.on('COMMAND', function () {
-        let args = Array.prototype.slice.call(arguments);
+        let args = Array.prototype.slice.call(arguments); 
         args.push(socket, socketServer);
         handleSynchronousClient.apply(this, args);
     });
@@ -32,7 +32,7 @@ socketServer.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log("disconnect one on ：" + new Date().toLocaleString());
     });
-
+    //接受add事件。
     socket.on("ADD", function() {
         console.log(arguments);
         let args = Array.prototype.slice.call(arguments);
